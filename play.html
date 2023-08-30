@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS.js Video Player Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <video id="video-player" controls></video>
+
+    <script>
+        // Initialize the video element and HLS.js
+        const videoElement = document.getElementById('video-player');
+        const hls = new Hls();
+
+        // Check if HLS.js is supported
+        if (Hls.isSupported()) {
+            // Attach HLS.js to the video element
+            hls.attachMedia(videoElement);
+            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                // Load the HLS playlist from the server
+                hls.loadSource('output_hls/playlist.m3u8');
+            });
+        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+            // For browsers that support HLS natively
+            videoElement.src = 'output_hls/playlist.m3u8';
+        }
+
+        // Handle errors
+        hls.on(Hls.Events.ERROR, (event, data) => {
+            if (data.fatal) {
+                switch(data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        // Handle network errors
+                        break;
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        // Handle media errors
+                        break;
+                    default:
+                        // Handle other errors
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
